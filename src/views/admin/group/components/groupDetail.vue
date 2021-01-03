@@ -1,69 +1,144 @@
 <template>
-<el-row>
-  <el-col :span="24">
-    <el-button-group>
-      <el-button type="primary" v-if="groupManager_btn_add" icon="plus" @click="handlerAdd">添加</el-button>
-      <el-button type="primary" v-if="groupManager_btn_edit" icon="edit" @click="handlerEdit">编辑</el-button>
-      <el-button type="primary" v-if="groupManager_btn_del" icon="delete" @click="handleDelete">删除</el-button>
-      <el-button type="primary" v-if="groupManager_btn_resourceManager" @click="handlerAuthority">
-        <icon-svg icon-class="quanxian1"></icon-svg>权限分配</el-button>
-      <el-button type="primary" v-if="groupManager_btn_userManager" @click="handlerUser">
-        <icon-svg icon-class="27"></icon-svg>关联用户</el-button>
-    </el-button-group>
-  </el-col>
-  <el-col :span="8" style='margin-top:15px;'>
-    <el-input placeholder="输入关键字进行过滤" v-model="filterText"> </el-input>
-    <el-tree class="filter-tree" :data="treeData" node-key="id" highlight-current :props="defaultProps" :filter-node-method="filterNode" ref="groupTree" @node-click="getNodeData" default-expand-all> </el-tree>
-  </el-col>
-  <el-col :span="16" style='margin-top:15px;'>
-    <el-form :label-position="labelPosition" label-width="80px" :model="form" ref="form">
-      <el-form-item label="名称">
-        <el-input v-model="form.name" :disabled="formEdit"></el-input>
-      </el-form-item>
-      <el-form-item label="编码">
-        <el-input v-model="form.code" :disabled="formEdit"></el-input>
-      </el-form-item>
-      <el-form-item label="描述">
-        <el-input v-model="form.description" :disabled="formEdit"></el-input>
-      </el-form-item>
-      <el-form-item v-if="formStatus == 'update'">
-        <el-button type="primary" v-if="groupManager_btn_edit" @click="update">更新</el-button>
-        <el-button @click="onCancel">取消</el-button>
-      </el-form-item>
-      <el-form-item v-if="formStatus == 'create'">
-        <el-button type="primary" v-if="groupManager_btn_add" @click="create">保存</el-button>
-        <el-button @click="onCancel">取消</el-button>
-      </el-form-item>
-    </el-form>
-  </el-col>
-  <el-dialog :title="dialogUserName" :visible.sync="dialogUserVisible">
-    <group-user :groupId="currentId" @closeUserDialog="closeUserDialog" ref="groupUser"></group-user>
-  </el-dialog>
-  <el-dialog :title="dialogAuthorityName" size="large" :visible.sync="dialogAuthorityVisible">
-    <group-authority :groupId="currentId" @closeAuthorityDialog="closeAuthorityDialog" ref="groupAuthority"></group-authority>
-  </el-dialog>
-</el-row>
+  <el-row>
+    <el-col :span="24">
+      <el-button-group>
+        <el-button
+          type="primary"
+          v-if="groupManager_btn_add"
+          icon="plus"
+          @click="handlerAdd"
+        >添加</el-button>
+        <el-button
+          type="primary"
+          v-if="groupManager_btn_edit"
+          icon="edit"
+          @click="handlerEdit"
+        >编辑</el-button>
+        <el-button
+          type="primary"
+          v-if="groupManager_btn_del"
+          icon="delete"
+          @click="handleDelete"
+        >删除</el-button>
+        <el-button
+          type="primary"
+          v-if="groupManager_btn_resourceManager"
+          @click="handlerAuthority"
+        >
+          <icon-svg icon-class="quanxian1"></icon-svg>权限分配
+        </el-button>
+        <el-button
+          type="primary"
+          v-if="groupManager_btn_userManager"
+          @click="handlerUser"
+        >
+          <icon-svg icon-class="27"></icon-svg>关联用户
+        </el-button>
+      </el-button-group>
+    </el-col>
+    <el-col
+      :span="8"
+      style='margin-top:15px;'
+    >
+      <el-input
+        placeholder="输入关键字进行过滤"
+        v-model="filterText"
+      > </el-input>
+      <el-tree
+        class="filter-tree"
+        :data="treeData"
+        node-key="id"
+        highlight-current
+        :props="defaultProps"
+        :filter-node-method="filterNode"
+        ref="groupTree"
+        @node-click="getNodeData"
+        default-expand-all
+      > </el-tree>
+    </el-col>
+    <el-col
+      :span="16"
+      style='margin-top:15px;'
+    >
+      <el-form
+        :label-position="labelPosition"
+        label-width="80px"
+        :model="form"
+        ref="form"
+      >
+        <el-form-item label="名称">
+          <el-input
+            v-model="form.name"
+            :disabled="formEdit"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="编码">
+          <el-input
+            v-model="form.code"
+            :disabled="formEdit"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input
+            v-model="form.description"
+            :disabled="formEdit"
+          ></el-input>
+        </el-form-item>
+        <el-form-item v-if="formStatus == 'update'">
+          <el-button
+            type="primary"
+            v-if="groupManager_btn_edit"
+            @click="update"
+          >更新</el-button>
+          <el-button @click="onCancel">取消</el-button>
+        </el-form-item>
+        <el-form-item v-if="formStatus == 'create'">
+          <el-button
+            type="primary"
+            v-if="groupManager_btn_add"
+            @click="create"
+          >保存</el-button>
+          <el-button @click="onCancel">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-col>
+    <el-dialog
+      :title="dialogUserName"
+      :visible.sync="dialogUserVisible"
+    >
+      <group-user
+        :groupId="currentId"
+        @closeUserDialog="closeUserDialog"
+        ref="groupUser"
+      ></group-user>
+    </el-dialog>
+    <el-dialog
+      :title="dialogAuthorityName"
+      size="large"
+      :visible.sync="dialogAuthorityVisible"
+    >
+      <group-authority
+        :groupId="currentId"
+        @closeAuthorityDialog="closeAuthorityDialog"
+        ref="groupAuthority"
+      ></group-authority>
+    </el-dialog>
+  </el-row>
 </template>
 
 <script>
-import {
-  fetchTree,
-  getObj,
-  addObj,
-  delObj,
-  putObj
-} from 'api/admin/group/index';
+import { fetchTree, getObj, addObj, delObj, putObj } from 'api/admin/group/index';
 import { mapGetters } from 'vuex';
 export default {
   name: 'groupDetail',
   components: {
     'group-user': () => import('./groupUser'),
-    'group-authority': () => import('./groupAuthority')
+    'group-authority': () => import('./groupAuthority'),
   },
   props: {
     type: {
-      default: '1'
-    }
+      default: '1',
+    },
   },
   data() {
     return {
@@ -79,12 +154,12 @@ export default {
       dialogAuthorityName: '关联资源',
       listQuery: {
         groupType: this.type,
-        name: undefined
+        name: undefined,
       },
       treeData: [],
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'label',
       },
       labelPosition: 'right',
       groupManager_btn_edit: false,
@@ -96,15 +171,15 @@ export default {
         code: undefined,
         name: undefined,
         description: undefined,
-        groupType: this.type
+        groupType: this.type,
       },
-      currentId: -1
-    }
+      currentId: -1,
+    };
   },
   watch: {
     filterText(val) {
       this.$refs.groupTree.filter(val);
-    }
+    },
   },
   created() {
     this.getList();
@@ -115,13 +190,11 @@ export default {
     this.groupManager_btn_resourceManager = this.elements['groupManager:btn_resourceManager'];
   },
   computed: {
-    ...mapGetters([
-      'elements'
-    ])
+    ...mapGetters(['elements']),
   },
   methods: {
     getList() {
-      fetchTree(this.listQuery).then(data => {
+      fetchTree(this.listQuery).then(({ data }) => {
         this.treeData = data;
       });
     },
@@ -133,7 +206,7 @@ export default {
       if (!this.formEdit) {
         this.formStatus = 'update';
       }
-      getObj(data.id).then(response => {
+      getObj(data.id).then((response) => {
         this.form = response.data;
       });
       this.currentId = data.id;
@@ -153,7 +226,7 @@ export default {
       this.$confirm('此操作将永久删除, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       }).then(() => {
         delObj(this.currentId).then(() => {
           this.getList();
@@ -163,7 +236,7 @@ export default {
             title: '成功',
             message: '删除成功',
             type: 'success',
-            duration: 2000
+            duration: 2000,
           });
         });
       });
@@ -175,7 +248,7 @@ export default {
           title: '成功',
           message: '创建成功',
           type: 'success',
-          duration: 2000
+          duration: 2000,
         });
       });
     },
@@ -186,7 +259,7 @@ export default {
           title: '成功',
           message: '创建成功',
           type: 'success',
-          duration: 2000
+          duration: 2000,
         });
       });
     },
@@ -200,7 +273,7 @@ export default {
         code: undefined,
         name: undefined,
         description: undefined,
-        groupType: this.type
+        groupType: this.type,
       };
     },
     handlerUser() {
@@ -222,7 +295,7 @@ export default {
     },
     closeAuthorityDialog() {
       this.dialogAuthorityVisible = false;
-    }
-  }
-}
+    },
+  },
+};
 </script>

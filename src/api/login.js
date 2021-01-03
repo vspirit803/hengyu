@@ -1,14 +1,23 @@
 import fetch from 'utils/fetch';
 
-export function loginByEmail(username, password) {
+export function loginByEmail(username, password, verCode, uuid) {
   const data = {
     username,
-    password
+    password,
+    verCode,
+    uuid,
   };
   return fetch({
     url: '/api/auth/jwt/token',
     method: 'post',
-    data
+    data,
+  });
+}
+
+export function fetchCaptcha() {
+  return fetch({
+    url: '/api/auth/captcha',
+    method: 'get',
   });
 }
 
@@ -16,7 +25,7 @@ export function logout(token) {
   return fetch({
     url: '/api/auth/jwt/invalid',
     method: 'get',
-    params: { token }
+    params: { token },
   });
 }
 
@@ -24,7 +33,7 @@ export function getInfo(token) {
   return fetch({
     url: '/api/admin/user/front/info',
     method: 'get',
-    params: { token }
+    params: { token },
   });
 }
 
@@ -32,13 +41,13 @@ export function getMenus(token) {
   return fetch({
     url: '/api/admin/user/front/menus',
     method: 'get',
-    params: { token }
+    params: { token },
   });
 }
 
 export function getAllMenus() {
   return fetch({
     url: '/api/admin/user/front/menu/all',
-    method: 'get'
+    method: 'get',
   });
 }
